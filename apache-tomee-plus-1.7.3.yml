@@ -1,0 +1,6 @@
+- name: install apache tomee plus 1.7.3
+  hosts: 127.0.0.1
+  roles:
+    - role: apache-tomee
+      apache_tomee_edition: plus
+      apache_tomee_version: 1.7.3

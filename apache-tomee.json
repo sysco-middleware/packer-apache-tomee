@@ -1,0 +1,78 @@
+{
+  "description": "java packer template",
+
+  "variables": {
+    "image_name": "",
+
+    "virtualbox_output_directory": "",
+    "virtualbox_source_path": "",
+
+    "vagrant_output_path": "",
+
+    "ansible_playbook_file": "",
+
+    "atlas_artifact": "",
+    "atlas_token": "{{env `ATLAS_TOKEN`}}",
+
+    "version": "",
+    "timestamp": "{{isotime \"20060102150405\"}}"
+  },
+
+  "builders": [{
+    "name": "virtualbox",
+    "type": "virtualbox-ovf",
+
+    "vm_name": "{{user `image_name`}}",
+    "output_directory": "{{user `virtualbox_output_directory`}}",
+    "source_path": "{{user `virtualbox_source_path`}}",
+
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "ssh_port": 22,
+    "ssh_wait_timeout": "10000s",
+
+    "headless": false,
+    "boot_wait": "12s",
+
+    "shutdown_command": "echo 'vagrant'|sudo -S /sbin/halt -h -p"
+  }],
+
+  "provisioners": [{
+    "type": "ansible-local",
+    "playbook_file": "{{user `ansible_playbook_file`}}",
+    "role_paths": ["{{template_dir}}/roles/apache-tomee"],
+    "extra_arguments": "-s -u vagrant"
+  }, {
+    "type": "shell",
+
+    "inline": [
+      "dd if=/dev/zero of=/EMPTY bs=1M",
+      "rm -f /EMPTY",
+      "rm -rf /var/lib/yum/history/* /tmp/* /var/tmp/*"
+    ],
+
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'"
+  }],
+
+  "post-processors": [
+    [{
+      "type": "vagrant",
+
+      "output": "{{user `vagrant_output_path`}}",
+      "compression_level": 9,
+      "keep_input_artifact": true
+    }, {
+      "type": "atlas",
+
+      "token": "{{user `atlas_token`}}",
+
+      "artifact": "{{user `atlas_artifact`}}",
+      "artifact_type": "vagrant.box",
+      "metadata": {
+        "created_at": "{{timestamp}}",
+        "provider": "virtualbox",
+        "version": "{{user `version`}}.{{user `timestamp`}}"
+      }
+    }]
+  ]
+}

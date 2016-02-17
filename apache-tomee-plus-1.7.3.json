@@ -1,0 +1,14 @@
+{
+  "image_name": "apache-tomee-plus",
+
+  "virtualbox_output_directory": "build",
+  "virtualbox_source_path": "/home/jeqo/.vagrant.d/boxes/jeqo-VAGRANTSLASH-oracle-jdk-7-centos7/0/virtualbox/box.ovf",
+
+  "ansible_playbook_file": "apache-tomee-plus-1.7.3.yml",
+
+  "vagrant_output_path": "build/vagrant.box",
+
+  "atlas_artifact": "syscomiddleware/apache-tomee-plus",
+
+  "version": "1.7.3"
+}

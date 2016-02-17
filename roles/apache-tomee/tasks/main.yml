@@ -1,0 +1,18 @@
+---
+# tasks file for apache-tomee
+- include: prepare-os.yml
+  become: yes
+  tags:
+    - preinstall
+
+- include: set-vars.yml
+  tags:
+    - install
+
+- include: install-tomee.yml
+  tags:
+    - install
+
+- include: configure-tomee.yml
+  tags:
+    - configure
